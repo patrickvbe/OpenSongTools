@@ -108,6 +108,7 @@ class BackgroundStyle(XMLWrapper):
         XMLWrapper.__init__(self)
 
         # xml attribute members
+        self.attributes['filename']     = ''
         self.attributes['color']        = '#000000'
         self.attributes['position']     = 1
         self.attributes['strip_footer'] = 0
@@ -139,7 +140,12 @@ class Slide(XMLWrapper):
     def __init__(self):
         XMLWrapper.__init__(self)
         # xml tag members
+        self.tags['filename']    = ''
+        self.tags['description']    = ''
+        self.tags['image']    = ''
         self.tags['body'] = ''
+        self.tags['subtitle'] = ''
+
 
 class Slides(XMLWrapper):
 
@@ -196,6 +202,55 @@ class SlideGroups(XMLWrapper):
         XMLWrapper.__init__(self)
         # xml tag members
         self.tags['slide_group'] = []
+
+class SlideGroupExternal(SlideGroup):
+
+    elements = { Slides.tagid : Slides }
+    elements.update(SlideGroup.elements)
+
+    def __init__(self):
+        SlideGroup.__init__(self)
+        self.attributes['type'] = 'custom'
+
+        # xml attribute members
+        self.attributes['loop'] = False
+        self.attributes['wait_to_finish'] = False
+        self.attributes['application'] = ''
+        self.attributes['action'] = ''
+        self.attributes['app_filename'] = ''
+        self.attributes['app_parameters'] = ''
+
+        # xml tag members
+        self.tags['notes']    = ''
+
+SlideGroup.slide_groups['external'] = SlideGroupExternal
+
+class SlideGroupImage(SlideGroup):
+
+    elements = { Slides.tagid : Slides }
+    elements.update(SlideGroup.elements)
+
+    def __init__(self):
+        SlideGroup.__init__(self)
+        self.attributes['type'] = 'custom'
+
+        # xml attribute members
+        self.attributes['resize'] = ''
+        self.attributes['descriptions_in_subtitle']    = False
+        self.attributes['keep_aspect']    = False
+        self.attributes['link']    = False
+        self.attributes['loop']    = False
+        self.attributes['seconds'] = 0
+        self.attributes['transition'] = 0
+        self.attributes['print']   = True
+
+        # xml tag members
+        self.tags['title']    = ''
+        self.tags['subtitle'] = ''
+        self.tags['notes']    = ''
+        self.tags['slides']   = None
+
+SlideGroup.slide_groups['image'] = SlideGroupImage
 
 class SlideGroupCustom(SlideGroup):
 
