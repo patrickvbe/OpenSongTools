@@ -175,7 +175,7 @@ class SlideGroup(XMLWrapper):
         if subclass:
             return subclass().FromXML(xmlnode)
         else:
-            print("*** Subclass for slide_group type {0} not found:".format(subtype))
+            print("*** Subclass for slide_group type {0} not found.".format(subtype))
 
     def __init__(self):
         XMLWrapper.__init__(self)
@@ -210,7 +210,7 @@ class SlideGroupExternal(SlideGroup):
 
     def __init__(self):
         SlideGroup.__init__(self)
-        self.attributes['type'] = 'custom'
+        self.attributes['type'] = 'external'
 
         # xml attribute members
         self.attributes['loop'] = False
@@ -232,7 +232,7 @@ class SlideGroupImage(SlideGroup):
 
     def __init__(self):
         SlideGroup.__init__(self)
-        self.attributes['type'] = 'custom'
+        self.attributes['type'] = 'image'
 
         # xml attribute members
         self.attributes['resize'] = ''

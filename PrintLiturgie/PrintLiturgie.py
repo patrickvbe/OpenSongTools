@@ -53,6 +53,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFo
                                  description='Print een liturgie op basis van een OpenSong presentatie.')
 parser.add_argument('presentation', nargs='+', help='presentatie files')
 parser.add_argument('--songroot',                                                                   help='OpenSong Song folder')
+parser.add_argument('--destination',                 default='.',                                   help='Pad voor de uitvoer bestanden')
 parser.add_argument('--extension',                   default='html',                                help='File extensie voor de liturgie file')
 parser.add_argument('--settemplate',                 default=default_set_template,                  help='Template voor de set. Gebruik $name, $slidegroups')
 parser.add_argument('--customslidegrouptemplate',    default=default_custom_slidegroup_template,    help='Template voor de text slide groep. Gebruik $name, $title, $subtitle, $slides')
@@ -108,7 +109,7 @@ def ConvertSong(songfile):
     try:
         set.Load()
     except Exception as ex:
-        print("Failed to load presentation {0}: {1}".format(presentation, str(ex)), file=sys.stderr)
+        print(F"Failed to load presentation {songfile}: {str(ex)}", file=sys.stderr)
         return
     slidegroups = []
     for slide_group in set.slide_groups:
@@ -127,7 +128,9 @@ def ConvertSong(songfile):
             if song:
                 slidegroups.append(songSlideGroupTemplate.safe_substitute(name=slide_group.name,
                     verses=FormatVerses(song, slide_group.present)))
-    with open(songfile + '.' + args.extension, 'w') as outfile:
+        elif slidetype == SlideGroupExternal:
+            slidegroups.append(songSlideGroupTemplate.safe_substitute(name=slide_group.name, verses=""))
+    with open(os.path.join(args.destination, songfile + '.' + args.extension), 'w') as outfile:
         print(setTemplate.safe_substitute(name=set.name, slidegroups='\n'.join(slidegroups)), file=outfile)
 
 for filename in args.presentation:
